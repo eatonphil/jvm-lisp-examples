@@ -47,3 +47,7 @@ Huzzah!
 # Running the Kawa Scheme example
 
 WIP...
+
+# What about Clojure?
+
+What is Clojure? I've never heard about this language.
