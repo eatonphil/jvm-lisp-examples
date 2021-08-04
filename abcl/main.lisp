@@ -4,13 +4,14 @@
 (setf jss:*muffle-warnings* nil)
 
 (setf imports '("io.jooby:jooby"
-		"io.jooby:jooby-netty"))
+		"io.jooby:jooby-netty"
+		"io.pebbletemplates:pebble"))
 (loop for import in imports
       do (java:add-to-classpath
 	  (abcl-asdf:as-classpath (abcl-asdf:resolve import))))
 
 (defun route (app method path handler)
-  (let ((handler (java:jnew (java:jnew-runtime-class
+  (let ((handler (jss:new (java:jnew-runtime-class
 			     (substitute #\$ #\/ (substitute #\$ #\- path))
 			     :interfaces (list "io.jooby.Route$Handler")
 			     :methods (list
@@ -24,9 +25,30 @@
 					       (funcall handler ctx))))))))
     (#"route" app method path handler)))
 
+(defun hashmap (alist)
+  (let ((map (jss:new 'HashMap)))
+    (loop for el in alist
+	 do (#"put" map (car el) (cadr el)))
+    map))
+
+(defun template (filename context-alist)
+  (let* ((ctx (hashmap context-alist))
+	 (path (java:jstatic "of" "java.nio.file.Path" filename (java:jnew-array "java.lang.String" 0)))
+	 (file (#"readString" 'java.nio.file.Files path))
+	 (engine (#"build" (jss:new 'PebbleEngine.Builder)))
+	 (compiledTmpl (#"getTemplate" engine filename))
+	 (writer (jss:new 'StringWriter)))
+    (#"evaluate" compiledTmpl writer ctx)))
+
 (defun register-endpoints (app)
-  (route app "GET" "/" #'(lambda (ctx) "An index!"))
-  (route app "GET" "/hello-world" #'(lambda (ctx) "Hello world!")))
+  (route app "GET" "/"
+	 #'(lambda (ctx) "An index!"))
+  (route app "GET" "/search"
+	 #'(lambda (ctx)
+	     (template "search.tmpl" '(("version" "1.0.0")
+				       ("results" '("cat" "dog" "mouse"))))))
+  (route app "GET" "/hello-world"
+	 #'(lambda (ctx) "Hello world!")))
 
 (let* ((port 8080)
        (server (jss:new 'Netty))
