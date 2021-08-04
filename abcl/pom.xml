@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>com.github.eatonphil</groupId>
+  <artifactId>abcl-rest-api-hello-world</artifactId>
+  <version>1</version>
+  
+  <dependencies>
+    <dependency>
+      <groupId>io.jooby</groupId>
+      <artifactId>jooby</artifactId>
+      <version>2.10.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.jooby</groupId>
+      <artifactId>jooby-netty</artifactId>
+      <version>2.10.0</version>
+    </dependency>
+  </dependencies>
+</project>
