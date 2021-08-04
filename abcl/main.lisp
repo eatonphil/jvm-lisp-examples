@@ -35,9 +35,9 @@
   (let* ((ctx (hashmap context-alist))
 	 (path (java:jstatic "of" "java.nio.file.Path" filename (java:jnew-array "java.lang.String" 0)))
 	 (file (#"readString" 'java.nio.file.Files path))
-	 (engine (#"build" (jss:new 'PebbleEngine.Builder)))
+	 (engine (#"build" (jss:new 'PebbleEngine$Builder)))
 	 (compiledTmpl (#"getTemplate" engine filename))
-	 (writer (jss:new 'StringWriter)))
+	 (writer (jss:new 'java.io.StringWriter)))
     (#"evaluate" compiledTmpl writer ctx)))
 
 (defun register-endpoints (app)
