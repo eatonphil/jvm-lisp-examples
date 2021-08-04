@@ -38,15 +38,17 @@
 	 (engine (#"build" (jss:new 'PebbleEngine$Builder)))
 	 (compiledTmpl (#"getTemplate" engine filename))
 	 (writer (jss:new 'java.io.StringWriter)))
-    (#"evaluate" compiledTmpl writer ctx)))
+    (#"evaluate" compiledTmpl writer ctx)
+    (#"toString" writer)))
+    
 
 (defun register-endpoints (app)
   (route app "GET" "/"
 	 #'(lambda (ctx) "An index!"))
   (route app "GET" "/search"
 	 #'(lambda (ctx)
-	     (template "search.tmpl" '(("version" "1.0.0")
-				       ("results" '("cat" "dog" "mouse"))))))
+	     (template "search.tmpl" `(("version" "1.0.0")
+				       ("results" ,(java:jarray-from-list '("cat" "dog" "mouse")))))))
   (route app "GET" "/hello-world"
 	 #'(lambda (ctx) "Hello world!")))
 
