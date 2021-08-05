@@ -44,13 +44,13 @@
 
 (defun register-endpoints (app)
   (route app "GET" "/"
-	 #'(lambda (ctx) "An index!"))
+	 (lambda (ctx) "An index!"))
   (route app "GET" "/search"
-	 #'(lambda (ctx)
+	 (lambda (ctx)
 	     (template "search.tmpl" `(("version" "1.0.0")
 				       ("results" ,(java:jarray-from-list '("cat" "dog" "mouse")))))))
   (route app "GET" "/hello-world"
-	 #'(lambda (ctx) "Hello world!")))
+	 (lambda (ctx) "Hello world!")))
 
 (let* ((port 8080)
        (server (jss:new 'Netty))
