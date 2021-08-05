@@ -11,19 +11,22 @@
 	  (abcl-asdf:as-classpath (abcl-asdf:resolve import))))
 
 (defun route (app method path handler)
-  (let ((handler (jss:new (java:jnew-runtime-class
-			     (substitute #\$ #\/ (substitute #\$ #\- path))
-			     :interfaces (list "io.jooby.Route$Handler")
-			     :methods (list
-					; Need to define this one to make Jooby figure out the return type
-					; Otherwise it tries to read "this file" which isn't a Java file so cannot be parsed
-				       (list "apply" "java.lang.String" '("io.jooby.Context")
-					     (lambda (this ctx) nil))
-					; This one actually gets called
-				       (list "apply" "java.lang.Object" '("io.jooby.Context")
-					     (lambda (this ctx)
-					       (funcall handler ctx))))))))
-    (#"route" app method path handler)))
+  (#"route"
+   app
+   method
+   path
+   (jss:new (java:jnew-runtime-class
+	     (substitute #\$ #\/ (substitute #\$ #\- path))
+	     :interfaces '("io.jooby.Route$Handler")
+	     :methods `(
+		       ;; Need to define this one to make Jooby figure out the return type
+		       ;; Otherwise it tries to read "this file" which isn't a Java file so cannot be parsed
+		       ("apply" "java.lang.String" ("io.jooby.Context")
+			(lambda (this ctx) nil))
+		       ;; This one actually gets called
+		       ("apply" "java.lang.Object" ("io.jooby.Context")
+			(lambda (this ctx)
+			  (funcall ,handler ctx))))))))
 
 (defun hashmap (alist)
   (let ((map (jss:new 'HashMap)))

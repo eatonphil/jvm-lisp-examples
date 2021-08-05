@@ -1,4 +1,4 @@
 .PHONY: run
 
 run:
-	CLASSPATH="$(shell find ~/.m2/repository -name '*.jar' | paste -sd ';');." kawa test.scm
+	CLASSPATH="$(shell find ~/.m2/repository -name '*.jar' | paste -sd ':'):." kawa test.scm
