@@ -55,7 +55,7 @@
   (route app "GET" "/hello-world"
 	 (lambda (ctx) "Hello world!")))
 
-(let* ((port 8080)
+(let ((port 8080)
        (server (jss:new 'Netty))
        (app (jss:new 'Jooby)))
   (register-endpoints app)
