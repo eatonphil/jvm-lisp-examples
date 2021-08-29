@@ -1,12 +1,13 @@
 (require 'hash-table)
 
 (define (route app method path handler)
-  (let ((handler (object (io.jooby.Route$Handler)
+  (let ((rh (object (io.jooby.Route$Handler)
+		         #| This method exists just to stop Jooby from trying to introspect Java code that doesn't exist because this isn't written in Java. |#
 			 ((apply (ctx ::io.jooby.Context)) ::string
 			  #!null)
 			 ((apply (ctx ::io.jooby.Context)) ::java.lang.Object
 			  (handler ctx)))))
-    (app:route method path handler)))
+    (app:route method path rh)))
 
 (define (template filename context-alist)
   (let* ((ctx (alist->hash-table context-alist))
