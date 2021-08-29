@@ -36,14 +36,13 @@
 
 (defun template (filename context-alist)
   (let* ((ctx (hashmap context-alist))
-	 (path (java:jstatic "of" "java.nio.file.Path" filename (java:jnew-array "java.lang.String" 0)))
+	 (path (java:jstatic "of" "java.nio.file.Path" floo))
 	 (file (#"readString" 'java.nio.file.Files path))
 	 (engine (#"build" (jss:new 'PebbleEngine$Builder)))
 	 (compiledTmpl (#"getTemplate" engine filename))
 	 (writer (jss:new 'java.io.StringWriter)))
     (#"evaluate" compiledTmpl writer ctx)
     (#"toString" writer)))
-    
 
 (defun register-endpoints (app)
   (route app "GET" "/"

@@ -1,25 +1,21 @@
-(require <io.jooby>)
+(require 'hash-table)
 
 (define (route app method path handler)
-  (let ((handler (object (<io.jooby.Route$Handler>)
-			 ((apply (ctx <io.jooby.Context>)) ::string
+  (let ((handler (object (io.jooby.Route$Handler)
+			 ((apply (ctx ::io.jooby.Context)) ::string
+			  #!null)
+			 ((apply (ctx ::io.jooby.Context)) ::java.lang.Object
 			  (handler ctx)))))
-    (app.route method path handler)))
-
-(define (hashmap alist)
-  (let ((map (java.util.HashMap)))
-    (loop for el in alist
-	 do (map.put (car el) (cadr el)))
-    map))
+    (app:route method path handler)))
 
 (define (template filename context-alist)
-  (let* ((ctx (hashmap context-alist))
-	 (path (java.nio.file.Path:of filename '()))
+  (let* ((ctx (alist->hash-table context-alist))
+	 (path (java.nio.file.Path:of filename (string[])))
 	 (file (java.nio.file.Files:readString path))
-	 (engine ((io.pebble.PebbleEngine.Builder).build))
-	 (compiledTmpl (engine.getTemplate filename))
-	 (writer (jss:new 'StringWriter)))
-    (compiledTmpl.evaluate writer ctx)))
+	 (engine ((io.pebble.PebbleEngine.Builder):build))
+	 (compiledTmpl (engine:getTemplate filename))
+	 (writer (java.io.StringWriter)))
+    (compiledTmpl:evaluate writer ctx)))
 
 (define (register-endpoints app)
   (route app "GET" "/"
@@ -35,6 +31,6 @@
        (server (io.jooby.netty.Netty))
        (app (io.jooby.Jooby)))
   (register-endpoints app)
-  (server.setOptions ((io.jooby.ServerOptions).setPort port))
-  (server.start app)
-  (server.join))
+  (server:setOptions ((io.jooby.ServerOptions):setPort port))
+  (server:start app)
+  (server:join))
