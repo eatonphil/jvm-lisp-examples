@@ -3,10 +3,10 @@
 (define (route app method path handler)
   (let ((rh (object (io.jooby.Route$Handler)
 		         #| This method exists just to stop Jooby from trying to introspect Java code that doesn't exist because this isn't written in Java. |#
-			 ((apply (ctx ::io.jooby.Context)) ::string
-			  #!null)
 			 ((apply (ctx ::io.jooby.Context)) ::java.lang.Object
-			  (handler ctx)))))
+			  (handler ctx))
+			 ((apply (ctx ::io.jooby.Context)) ::string
+			  #!null))))
     (app:route method path rh)))
 
 (define (template filename context-alist)
